@@ -1,12 +1,13 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
+  ClientProvider,
   ClientsModule,
   ClientsModuleAsyncOptions,
-  Transport,
 } from '@nestjs/microservices';
 import { BrokerService } from './broker.service';
 import redisValidate from './env-config';
+import { getConfig } from './config';
 
 interface BrokerModuleOptions {
   names: string[];
@@ -21,16 +22,8 @@ export class BrokerModule {
   static register(options: BrokerModuleOptions = { names: [] }): DynamicModule {
     const clients: ClientsModuleAsyncOptions = options.names.map((name) => ({
       name,
-      useFactory: (configService: ConfigService) => ({
-        transport: Transport.REDIS,
-        options: {
-          host: configService.get<string>('REDIS_HOST'),
-          password: configService.get<string>('REDIS_PASSWORD'),
-          port: configService.get<number>('REDIS_PORT'),
-          retryAttempts: 5,
-          retryDelay: 1,
-        },
-      }),
+      useFactory: (configService: ConfigService) =>
+        getConfig(configService) as ClientProvider,
       inject: [ConfigService],
     }));
 

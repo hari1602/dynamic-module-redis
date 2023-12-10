@@ -1,21 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { getConfig } from './config';
 
 @Injectable()
 export class BrokerService {
   constructor(private readonly configService: ConfigService) {}
 
   getOptions(): MicroserviceOptions {
-    return {
-      transport: Transport.REDIS,
-      options: {
-        host: this.configService.get<string>('REDIS_HOST'),
-        password: this.configService.get<string>('REDIS_PASSWORD'),
-        port: this.configService.get<number>('REDIS_PORT'),
-        retryAttempts: 5,
-        retryDelay: 1,
-      },
-    };
+    return getConfig(this.configService);
   }
 }
