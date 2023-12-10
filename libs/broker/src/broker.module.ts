@@ -18,8 +18,8 @@ interface BrokerModuleOptions {
   exports: [BrokerService],
 })
 export class BrokerModule {
-  static register({ names }: BrokerModuleOptions): DynamicModule {
-    const clients: ClientsModuleAsyncOptions = names.map((name) => ({
+  static register(options: BrokerModuleOptions = { names: [] }): DynamicModule {
+    const clients: ClientsModuleAsyncOptions = options.names.map((name) => ({
       name,
       useFactory: (configService: ConfigService) => ({
         transport: Transport.REDIS,

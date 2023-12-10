@@ -10,7 +10,7 @@ import { BrokerModule } from '@app/broker';
       isGlobal: true,
       envFilePath: `${process.cwd()}/apps/receiver/.env`,
     }),
-    BrokerModule,
+    BrokerModule.register(),
   ],
   controllers: [ReceiverController],
   providers: [ReceiverService],
